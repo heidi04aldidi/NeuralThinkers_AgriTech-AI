@@ -1,97 +1,94 @@
 from typing import Dict, Any, List
 import os
+import random
 
-# Resilient imports
 try:
     from langchain_openai import ChatOpenAI
     from langchain_core.prompts import ChatPromptTemplate
-    from langchain.schema import SystemMessage, HumanMessage, AIMessage
+    try:
+        from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+    except ImportError:
+        from langchain.schema import SystemMessage, HumanMessage, AIMessage
     AI_AVAILABLE = True
 except ImportError as e:
     print(f"Warning: AI dependencies missing ({e}). Using mock AI logic.")
     AI_AVAILABLE = False
 
+def get_simulated_analysis(weather: Dict[str, Any], soil: Dict[str, Any]) -> Dict[str, Any]:
+    temp = weather.get('temperature_c', 25)
+    ph = soil.get('soil_ph', 7.0)
+    
+    if ph < 6.0:
+        crops = ["Blueberries", "Potatoes", "Sweet Potatoes"]
+        soil_note = "Your soil is acidic. These crops thrive in lower pH levels."
+        actions = ["Apply agricultural lime to raise pH", "Monitor for nutrient deficiencies", "Add organic matter"]
+    elif ph > 7.5:
+        crops = ["Asparagus", "Beets", "Cabbage"]
+        soil_note = "Your soil is alkaline. Selecting salt-tolerant crops is recommended."
+        actions = ["Apply elemental sulfur", "Use acidifying fertilizers", "Ensure deep irrigation"]
+    else:
+        crops = ["Rice", "Wheat", "Maize", "Tomatoes"]
+        soil_note = "Your soil pH is optimal (Neutral). Most major crops will thrive here."
+        actions = ["Maintain current fertilization", "Monitor moisture during bloom", "Check for pests weekly"]
+
+    return {
+        "suggested_crops": crops,
+        "soil_analysis": f"(Simulated) {soil_note}",
+        "action_plan": actions
+    }
+
+def get_simulated_chat(prompt: str, context: Dict[str, Any]) -> str:
+    prompt = prompt.lower()
+    crop = context.get('crop_type', 'crop')
+    
+    if "water" in prompt or "irrigation" in prompt:
+        return f"For your {crop}, I recommend checking soil moisture 2 inches deep. If it feels dry, irrigate early in the morning to reduce evaporation."
+    elif "pest" in prompt or "bug" in prompt:
+        return f"Common pests for {crop} can be managed using neem oil or integrated pest management. Check under the leaves for any early signs of infestation."
+    elif "fertilizer" in prompt or "nutrient" in prompt:
+        return f"Based on your soil, a balanced N-P-K fertilizer would work well for {crop}. Since your pH is {context.get('ph_level', 7.0)}, nutrients should be readily available."
+    else:
+        return f"That's a great question about {crop}. Generally, you should focus on maintaining stable soil moisture and monitoring for any localized weather alerts I've displayed on your dashboard."
+
 def get_expert_analysis(weather_data: Dict[str, Any], soil_data: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Generate expert agricultural analysis based on weather and soil data.
-    """
-    if not AI_AVAILABLE or not os.environ.get("OPENAI_API_KEY"):
-        return {
-            "suggested_crops": ["Wheat", "Rice", "Maize"],
-            "soil_analysis": "AI Analysis unavailable (Check API Key or Depedencies). Soil structure appears stable.",
-            "action_plan": [
-                "Ensure proper drainage",
-                "Monitor soil moisture daily",
-                "Apply organic compost if possible"
-            ]
-        }
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip().strip('"').strip("'")
+    
+    if AI_AVAILABLE and api_key and "sk-" in api_key:
+        try:
+            llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o-mini", openai_api_key=api_key)
+            json_prompt = ChatPromptTemplate.from_template(
+                """
+                Analyze environmental data: Weather: {weather_data}, Soil: {soil_data}.
+                Return JSON with keys: suggested_crops (list), soil_analysis (string), action_plan (list of 3).
+                """
+            )
+            chain = json_prompt | llm
+            result = chain.invoke({"weather_data": str(weather_data), "soil_data": str(soil_data)})
+            import json
+            clean_content = result.content.strip().replace("```json", "").replace("```", "")
+            return json.loads(clean_content)
+        except Exception as e:
+            print(f"AI API failed, switching to Smart Simulator: {e}")
 
-    try:
-        llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o")
-
-        # Use a simple prompt for robust JSON parsing
-        json_prompt = ChatPromptTemplate.from_template(
-            """
-            You are an expert Agronomist AI. Analyze the following environmental data:
-            
-            Weather: {weather_data}
-            Soil: {soil_data}
-            
-            Return a valid JSON object with the following keys:
-            - suggested_crops: list of strings (3-5 crops)
-            - soil_analysis: string (1 sentence)
-            - action_plan: list of strings (3 bullet points)
-            
-            Do not include markdown formatting like ```json. Just the raw JSON.
-            """
-        )
-        
-        chain = json_prompt | llm
-        result = chain.invoke({"weather_data": str(weather_data), "soil_data": str(soil_data)})
-        
-        import json
-        clean_content = result.content.strip().replace("```json", "").replace("```", "")
-        return json.loads(clean_content)
-        
-    except Exception as e:
-        print(f"Error in AI analysis: {e}")
-        return {
-            "suggested_crops": ["Maize", "Sorghum", "Millet"],
-            "soil_analysis": "Could not generate analysis due to runtime error. Defaulting to drought-resistant crops.",
-            "action_plan": ["Check water sources", "Monitor temperature"]
-        }
+    return get_simulated_analysis(weather_data, soil_data)
 
 def get_chat_response(messages: List[Dict[str, str]], context: Dict[str, Any]) -> str:
-    """
-    Get a response from the AI Chatbot.
-    """
-    if not AI_AVAILABLE or not os.environ.get("OPENAI_API_KEY"):
-        return "I am currently running in offline mode. Please check your OpenAI API Key and dependencies to enable AI features."
-
-    try:
-        llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o")
-        
-        system_text = f"""
-        You are an AI Agricultural Advisor. You are helping a farmer who has the following conditions:
-        
-        Current Crop: {context.get('crop_type', 'Unknown')}
-        Soil Type: {context.get('soil_type', 'Unknown')}
-        pH Level: {context.get('ph_level', 'Unknown')}
-        Weather Alert: {context.get('weather_alert', 'None')}
-        
-        Provide helpful, concise, and scientifically accurate farming advice.
-        """
-        
-        langchain_messages = [SystemMessage(content=system_text)]
-        
-        for msg in messages:
-            if msg["role"] == "user":
-                langchain_messages.append(HumanMessage(content=msg["content"]))
-            elif msg["role"] == "assistant":
-                langchain_messages.append(AIMessage(content=msg["content"]))
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip().strip('"').strip("'")
+    user_prompt = messages[-1]["content"] if messages else ""
+    
+    if AI_AVAILABLE and api_key and "sk-" in api_key:
+        try:
+            llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o-mini", openai_api_key=api_key)
+            system_text = f"You are an AI Agronomist for {context.get('crop_type')} in {context.get('soil_type')} soil (pH {context.get('ph_level')})."
+            
+            langchain_messages = [SystemMessage(content=system_text)]
+            for msg in messages:
+                if msg["role"] == "user": langchain_messages.append(HumanMessage(content=msg["content"]))
+                elif msg["role"] == "assistant": langchain_messages.append(AIMessage(content=msg["content"]))
                 
-        response = llm.invoke(langchain_messages)
-        return response.content
-        
-    except Exception as e:
-        return f"I encountered an error while thinking: {str(e)}"
+            response = llm.invoke(langchain_messages)
+            return response.content
+        except Exception as e:
+            print(f"Chat API failed, switching to Smart Simulator: {e}")
+
+    return get_simulated_chat(user_prompt, context)

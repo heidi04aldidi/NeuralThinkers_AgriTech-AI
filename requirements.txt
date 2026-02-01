@@ -6,9 +6,6 @@ langchain-openai
 python-dotenv
 requests
 pydantic
-<<<<<<< Updated upstream
-=======
 plotly
 pandas
 numpy<2.0.0
->>>>>>> Stashed changes
