@@ -21,7 +21,7 @@ if not st.session_state.get('authenticated', False):
 def connect_db():
     if st.session_state.get('authenticated'):
         with st.sidebar.expander("🔌 System Health", expanded=False):
-            st.write(f"**GPS:** {'✅' if st.session_state.get('env_data', {}).get('location') else '❌'}")
+            st.write(f"**GPS:** {'GPS not enabled' if st.session_state.get('env_data', {}).get('location') else 'GPS enabled'}")
             
             import os
             keys = {
@@ -30,7 +30,7 @@ def connect_db():
                 "OpenAI": bool(os.environ.get("OPENAI_API_KEY"))
             }
             for k, v in keys.items():
-                st.write(f"**{k}:** {'✅' if v else '❌'}")
+                st.write(f"**{k}:** {'configured' if v else 'not configured'}")
                 
             if st.session_state.get('env_data'):
                 st.json(st.session_state.env_data['location'])
