@@ -6,8 +6,12 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 from typing import List, Literal, Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.prompts import ChatPromptTemplate
+    GOOGLE_GENAI_AVAILABLE = True
+except ImportError:
+    GOOGLE_GENAI_AVAILABLE = False
 from .state import ValidationResult, ExtractionModel, WeatherData, SoilData
 from .integration import fetch_and_validate_environment_data, format_environment_for_prompt
 

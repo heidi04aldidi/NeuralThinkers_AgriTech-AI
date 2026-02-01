@@ -2,6 +2,27 @@ import streamlit as st
 import sqlite3
 import hashlib
 from streamlit_js_eval import get_geolocation
+try:
+    import langchain_google_genai
+    import langgraph
+    import plotly
+except ImportError as e:
+    import streamlit as st
+    import sys
+    import os
+    st.error(f"### Environment Error: Missing Dependencies")
+    st.write(f"The module **'{e.name}'** was not found.")
+    
+    st.info("### Technical Diagnostics:")
+    st.write(f"- **Current Python:** `{sys.executable}`")
+    st.write(f"- **Working Directory:** `{os.getcwd()}`")
+    
+    st.warning("You are currently running the app using the **system/Anaconda Python**, which does not have the AgriTech AI libraries installed.")
+    st.success("### How to fix this:")
+    st.write("Run the following command in your terminal to use the correct local environment:")
+    st.code("./run_app.sh")
+    st.stop()
+
 from farmer_dashboard import show_farmer_dashboard
 from dotenv import load_dotenv
 
