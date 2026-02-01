@@ -52,11 +52,39 @@ def build_graph():
     graph.add_node("soil_analysis", soil_node)
     graph.add_node("decision", decision_node)
 
+<<<<<<< Updated upstream
     graph.set_entry_point("weather_analysis")
     graph.add_edge("weather_analysis", "soil_analysis")
     graph.add_edge("soil_analysis", "decision")
     graph.add_edge("decision", END)
+=======
+    graph.set_entry_point("validate_input")
+
+    graph.add_edge("validate_input", "extract_keywords")
+    graph.add_edge("extract_keywords", "weather_analysis")
+    graph.add_conditional_edges(
+        "weather_analysis",
+        route_after_weather,
+        {
+            "soil_analysis": "soil_analysis",
+            "generate_advice": "generate_advice",
+        }
+    )
+    graph.add_edge("soil_analysis", "generate_advice")
+    graph.add_edge("generate_advice", END)
+>>>>>>> Stashed changes
 
     return graph.compile(
         checkpointer=get_memory()
     )
+<<<<<<< Updated upstream
+=======
+
+def route_after_weather(state: AgentState) -> str:
+    farmer_input = state["farmer_input"]
+
+    if farmer_input.soil_type == "unknown":
+        return "generate_advice"
+
+    return "soil_analysis"              
+>>>>>>> Stashed changes
