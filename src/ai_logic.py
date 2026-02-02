@@ -47,17 +47,92 @@ def get_simulated_analysis(weather: Dict[str, Any], soil: Dict[str, Any]) -> Dic
     }
 
 def get_simulated_chat(prompt: str, context: Dict[str, Any]) -> str:
-    prompt = prompt.lower()
+    prompt_lower = prompt.lower()
     crop = context.get('crop_type', 'crop')
+    ph = context.get('ph_level', 7.0)
+    moisture = context.get('soil_moisture', 50.0)
+    temp = context.get('temperature_c', 25.0)
     
-    if "water" in prompt or "irrigation" in prompt:
-        return f"For your {crop}, I recommend checking soil moisture 2 inches deep. If it feels dry, irrigate early in the morning to reduce evaporation."
-    elif "pest" in prompt or "bug" in prompt:
-        return f"Common pests for {crop} can be managed using neem oil or integrated pest management. Check under the leaves for any early signs of infestation."
-    elif "fertilizer" in prompt or "nutrient" in prompt:
-        return f"Based on your soil, a balanced N-P-K fertilizer would work well for {crop}. Since your pH is {context.get('ph_level', 7.0)}, nutrients should be readily available."
+    header = f"### Senior Agronomist Advice (Simulated)\n\n"
+    
+    if "water" in prompt_lower or "irrigation" in prompt_lower:
+        advice = f"""**Subject: Irrigation Management for {crop}**
+
+#### ROOT CAUSE ANALYSIS
+Based on your current soil moisture ({moisture}%) and temperature ({temp}°C), your {crop} is currently in a metabolic state that requires precise water management. Over-irrigation can lead to root rot, while under-irrigation causes nutrient lockout.
+
+#### IMMEDIATE ACTIONS (Next 48h)
+- **Moisture Check:** Verify the top 3 inches of soil. If it feels dusty, provide a deep soak.
+- **Timing:** Irrigate specifically between 5:00 AM and 8:00 AM to minimize fungal development and evaporation.
+- **Monitoring:** If rainfall is expected, delay any manual irrigation to prevent nitrogen leaching.
+
+#### LONG-TERM PREVENTION
+Consider installing a drip irrigation system to deliver water directly to the root zone. Mulching with organic matter can also help retain {moisture}% moisture levels more consistently.
+
+#### SAFETY WARNING
+Avoid overhead sprinkling during hot afternoon hours, as this can cause leaf scald and increase the risk of disease."""
+    
+    elif "pest" in prompt_lower or "bug" in prompt_lower or "insect" in prompt_lower:
+        advice = f"""**Subject: Integrated Pest Management (IPM) for {crop}**
+
+#### ROOT CAUSE ANALYSIS
+Rising temperatures ({temp}°C) often accelerate the life cycle of common pests. Your {crop} may be vulnerable to attackers if the plant is stressed by moisture fluctuations or pH imbalances.
+
+#### IMMEDIATE ACTIONS (Next 48h)
+- **Manual Scouting:** Inspect the undersides of leaves for eggs or small larvae.
+- **Organic Intervention:** Apply a 2% Neem Oil solution or a mild insecticidal soap if infestation is visible.
+- **Biological Control:** Encourage natural predators like ladybugs or lacewings in your field.
+
+#### LONG-TERM PREVENTION
+Implement crop rotation in the next season to break pest cycles. Maintain strong plant immunity by keeping soil pH near {ph}.
+
+#### SAFETY WARNING
+Wear protective gear when applying any treatment, even organic ones. Avoid spraying during the presence of bees or other pollinators."""
+
+    elif "fertilizer" in prompt_lower or "nutrient" in prompt_lower or "urea" in prompt_lower:
+        advice = f"""**Subject: Nutrient and Soil Health for {crop}**
+
+#### ROOT CAUSE ANALYSIS
+Soil pH is the primary governor of nutrient availability. At pH {ph}, your {crop} may have specific needs. If the pH is outside the 6.0-7.0 range, some essential minerals like Phosphorus or Iron might be "locked" in the soil.
+
+#### IMMEDIATE ACTIONS (Next 48h)
+- **Soil Testing:** If you haven't recently, conduct a professional N-P-K test.
+- **Targeted Feeding:** Use a balanced, slow-release fertilizer if growth appears stunted.
+- **pH Adjustment:** If pH is too high, consider adding elemental sulfur; if too low, add agricultural lime.
+
+#### LONG-TERM PREVENTION
+Incorporate well-rotted compost annually to build soil structure and buffer pH levels over time.
+
+#### SAFETY WARNING
+Do not over-apply Nitrogen fertilizers, as this can lead to excessive leaf growth at the expense of fruit/grain production and can contaminate local groundwater."""
+
+    elif "hindi" in prompt_lower:
+         advice = f"""नमस्ते! आपकी **{crop}** की फसल के लिए यहां कुछ विशेषज्ञ सुझाव दिए गए हैं:
+
+1. **सिंचाई:** मिट्टी की नमी ({moisture}%) की जांच करें। सुबह जल्दी पानी देना सबसे अच्छा है।
+2. **मिट्टी का स्वास्थ्य:** आपका pH {ph} है। इसे संतुलित रखने के लिए जैविक खाद का प्रयोग करें।
+3. **तापमान:** अभी तापमान {temp}°C है, इसलिए फसल को लू या अधिक गर्मी से बचाएं।
+
+यह एक सिम्युलेटेड (Simulated) उत्तर है क्योंकि अभी AI सर्विस उपलब्ध नहीं है। पूर्ण विवरण के लिए कृपया थोड़ी देर बाद फिर से प्रयास करें।"""
+
     else:
-        return f"That's a great question about {crop}. Generally, you should focus on maintaining stable soil moisture and monitoring for any localized weather alerts I've displayed on your dashboard."
+        advice = f"""**Subject: General Agronomy Assessment for {crop}**
+
+#### ROOT CAUSE ANALYSIS
+The query "{prompt[:30]}..." indicates an interest in optimizing your {crop} production. Your current environmental parameters (pH: {ph}, Temp: {temp}°C) provide a solid baseline for analysis.
+
+#### IMMEDIATE ACTIONS (Next 48h)
+- **Routine Inspection:** Walk your fields to check for any visible stress signals in the leaves or stems.
+- **Data Monitoring:** Keep an eye on the weather alerts for any sudden changes in humidity or rainfall.
+- **Soil Balance:** Maintain the soil pH and moisture at optimal levels for {crop}.
+
+#### LONG-TERM PREVENTION
+Keep a detailed farm journal to track how your {crop} responds to different weather patterns and interventions.
+
+#### SAFETY WARNING
+Always prioritize environmental safety and personal protection when performing any field operations."""
+
+    return header + advice
 
 def get_expert_analysis(weather_data: Dict[str, Any], soil_data: Dict[str, Any]) -> Dict[str, Any]:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip().strip('"').strip("'")
