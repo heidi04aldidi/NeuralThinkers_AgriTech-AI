@@ -53,9 +53,35 @@ def get_simulated_chat(prompt: str, context: Dict[str, Any]) -> str:
     moisture = context.get('soil_moisture', 50.0)
     temp = context.get('temperature_c', 25.0)
     
+    print(f"DEBUG: Simulator received prompt: '{prompt}'")
+    is_hindi = "hindi" in prompt_lower or any('\u0900' <= char <= '\u097F' for char in prompt)
+    print(f"DEBUG: Hindi detected: {is_hindi}")
+    
     header = f"### Senior Agronomist Advice (Simulated)\n\n"
     
-    if "water" in prompt_lower or "irrigation" in prompt_lower:
+    # Check for Hindi characters or explicit request for Hindi first
+    if is_hindi:
+         advice = f"""नमस्ते! आपकी **{crop}** की फसल के लिए यहां एक विस्तृत कृषि रिपोर्ट दी गई है:
+
+#### मुख्य विश्लेषण (Root Cause Analysis)
+आपकी मिट्टी का pH {ph} है और नमी {moisture}% है। आपके क्षेत्र का तापमान ({temp}°C) फसल की वृद्धि के लिए महत्वपूर्ण है।
+
+#### तत्काल कार्रवाई (Immediate Actions)
+- **सिंचाई:** यदि मिट्टी सूखी लगे, तो सुबह 5 से 8 बजे के बीच पानी दें।
+- **निरीक्षण:** पत्तियों के नीचे कीटों या रोगों के शुरुआती संकेतों की जांच करें।
+- **मिट्टी का संतुलन:** फसल की बेहतर उपज के लिए मिट्टी की नमी को स्थिर रखें।
+
+#### दीर्घकालिक रोकथाम (Long-term Prevention)
+- **जैविक खाद:** बेहतर फसल के लिए हर साल अच्छी तरह से सड़ी हुई गोबर की खाद डालें।
+- **फसल चक्र:** कीटों के प्रभाव को कम करने के लिए फसल चक्र (Crop Rotation) का पालन करें।
+
+#### सुरक्षा चेतावनी (Safety Warning)
+- कृषि रसायनों का प्रयोग करते समय सुरक्षात्मक गियर पहनें।
+- तेज धूप में सिंचाई करने से बचें।
+
+**नोट:** यह एक सिम्युलेटेड (Simulated) विशेषज्ञ सलाह है क्योंकि AI नेटवर्क अभी व्यस्त है। पूरे अनुभव के लिए कृपया थोड़ी देर बाद प्रयास करें।"""
+    
+    elif "water" in prompt_lower or "irrigation" in prompt_lower:
         advice = f"""**Subject: Irrigation Management for {crop}**
 
 #### ROOT CAUSE ANALYSIS
@@ -105,15 +131,6 @@ Incorporate well-rotted compost annually to build soil structure and buffer pH l
 
 #### SAFETY WARNING
 Do not over-apply Nitrogen fertilizers, as this can lead to excessive leaf growth at the expense of fruit/grain production and can contaminate local groundwater."""
-
-    elif "hindi" in prompt_lower:
-         advice = f"""नमस्ते! आपकी **{crop}** की फसल के लिए यहां कुछ विशेषज्ञ सुझाव दिए गए हैं:
-
-1. **सिंचाई:** मिट्टी की नमी ({moisture}%) की जांच करें। सुबह जल्दी पानी देना सबसे अच्छा है।
-2. **मिट्टी का स्वास्थ्य:** आपका pH {ph} है। इसे संतुलित रखने के लिए जैविक खाद का प्रयोग करें।
-3. **तापमान:** अभी तापमान {temp}°C है, इसलिए फसल को लू या अधिक गर्मी से बचाएं।
-
-यह एक सिम्युलेटेड (Simulated) उत्तर है क्योंकि अभी AI सर्विस उपलब्ध नहीं है। पूर्ण विवरण के लिए कृपया थोड़ी देर बाद फिर से प्रयास करें।"""
 
     else:
         advice = f"""**Subject: General Agronomy Assessment for {crop}**

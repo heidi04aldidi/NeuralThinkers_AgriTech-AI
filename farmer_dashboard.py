@@ -265,6 +265,9 @@ def show_farmer_dashboard():
             st.session_state.page = "welcome"
             st.rerun()
         
+        if "messages" not in st.session_state or st.session_state.messages is None:
+            st.session_state.messages = []
+
         if "chat_crop" not in st.session_state or st.session_state.chat_crop != active_crop:
             st.session_state.messages = []
             st.session_state.chat_crop = active_crop
@@ -275,7 +278,7 @@ def show_farmer_dashboard():
             
         with st.sidebar:
             if st.button("Clear Chat History"):
-                del st.session_state.messages
+                st.session_state.messages = []
                 st.rerun()
 
         for message in st.session_state.messages:
