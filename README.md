@@ -3,7 +3,7 @@
 ##  Hosted Application
 
  **Live URL:**  
-https://neuralthinkersagritech-ai-izdhjypdnncbq495eygprt.streamlit.app/
+https://vsh1h-neuralthinkers-agritech-ai-app-og8nac.streamlit.app/
 
 ## Project Overview
 
