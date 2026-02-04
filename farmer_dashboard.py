@@ -91,7 +91,7 @@ def show_farmer_dashboard():
     """, unsafe_allow_html=True)
 
     with st.sidebar:
-        st.image("https://img.icons8.com/clouds/200/farm.png", width=120)
+        st.image("https://www.ugaoo.com/cdn/shop/articles/shutterstock_364038656.jpg?v=1661876813", width=120)
         st.title("AgriTech AI")
         st.markdown("---")
         
@@ -309,16 +309,16 @@ def show_farmer_dashboard():
                     }
                     
                     # Check which mode will be used
-                    import os
-                    api_key = os.environ.get("OPENAI_API_KEY", "").strip().strip('"').strip("'")
-                    gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
+                    # import os
+                    # api_key = os.environ.get("OPENAI_API_KEY", "").strip().strip('"').strip("'")
+                    # gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
                     
-                    if api_key and "sk-" in api_key:
-                        st.caption("🤖 Powered by OpenAI GPT-4o-mini")
-                    elif gemini_key:
-                        st.caption("🤖 Powered by Gemini AI (Fallback)")
-                    else:
-                        st.caption("🔄 Using Smart Simulator (Add API keys for full AI)")
+                    # if api_key and "sk-" in api_key:
+                    #     st.caption("🤖 Powered by OpenAI GPT-4o-mini")
+                    # elif gemini_key:
+                    #     st.caption("🤖 Powered by Gemini AI (Fallback)")
+                    # else:
+                    #     st.caption("🔄 Using Smart Simulator (Add API keys for full AI)")
                     
                     response = get_chat_response(st.session_state.messages, context)
                     st.markdown(response)

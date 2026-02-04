@@ -1,6 +1,6 @@
 # AI Integration Status Report
 
-## Current Status: ✅ WORKING
+## Current Status: WORKING
 
 The LLM integration is now fully functional with clear debugging and user feedback.
 
@@ -12,16 +12,16 @@ The LLM integration is now fully functional with clear debugging and user feedba
 - Shows query being processed and response length
 
 ### 2. **Visual UI Indicators**
-- Users now see "🤖 Powered by Gemini AI" when using real LLM
-- Shows "🔄 Using Smart Simulator" when API keys are missing
+- Users now see "Powered by Gemini AI" when using real LLM
+- Shows "Using Smart Simulator" when API keys are missing
 - Transparent about which system is responding
 
 ### 3. **API Key Configuration**
 Your `.env` file contains:
-- ✅ OPENAI_API_KEY (configured)
-- ✅ GEMINI_API_KEY (configured)  
-- ✅ OPENWEATHER_API_KEY (configured)
-- ✅ AMBEE_API_KEY (configured)
+- OPENAI_API_KEY (configured)
+- GEMINI_API_KEY (configured)  
+- OPENWEATHER_API_KEY (configured)
+- AMBEE_API_KEY (configured)
 
 ## How to Verify It's Working
 
@@ -30,7 +30,7 @@ Your `.env` file contains:
 2. Go to "AI Advisor" page
 3. Ask a question like: "How should I water my wheat crop?"
 4. Check the terminal output for debug logs showing "Using REAL LLM"
-5. Look for the "🤖 Powered by Gemini AI" caption in the chat
+5. Look for the "Powered by Gemini AI" caption in the chat
 
 ### What You Should See in Terminal:
 ```
@@ -59,7 +59,7 @@ AI ADVISOR DEBUG:
    OPENWEATHER_API_KEY = "your-openweather-api-key-here"
    AMBEE_API_KEY = "your-ambee-api-key-here"
    ```
-   ⚠️ **Use the actual keys from your local `.env` file**
+   **Note: Use the actual keys from your local `.env` file**
 
 2. **Verify requirements.txt includes:**
    - langchain-google-genai
@@ -91,7 +91,7 @@ AI ADVISOR DEBUG:
 
 ## Testing Checklist
 
-- [ ] Local app shows "🤖 Powered by Gemini AI" 
+- [ ] Local app shows "Powered by Gemini AI" 
 - [ ] Terminal shows "Using REAL LLM" debug message
 - [ ] AI responses are contextual and detailed (not generic simulator responses)
 - [ ] Secrets configured in Streamlit Cloud dashboard

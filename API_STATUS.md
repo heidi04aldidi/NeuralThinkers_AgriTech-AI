@@ -2,21 +2,21 @@
 
 ## Current Situation
 
-### ❌ Both APIs Have Hit Limits
+### Both APIs Have Hit Limits
 
 1. **OpenAI API**
-   - Status: ❌ Quota Exceeded
+   - Status: Quota Exceeded
    - Error: `429 - You exceeded your current quota`
    - Solution: Add billing/credits to OpenAI account OR wait for free tier reset
 
 2. **Gemini API**  
-   - Status: ❌ Rate Limit Hit
+   - Status: Rate Limit Hit
    - Error: `429 RESOURCE_EXHAUSTED - 20 requests/day limit`
    - Reset: Automatically in 24 hours
    - Free tier: 20 requests per day
 
-### ✅ Smart Simulator (Active)
-   - Status: ✅ Working
+### Smart Simulator (Active)
+   - Status: Working
    - No API needed
    - Provides rule-based responses
    - Always available as fallback
@@ -90,7 +90,7 @@ The simulator provides intelligent responses based on:
 
 3. **Ask any question** - you'll see:
    - Terminal: "→ Using Smart Simulator"
-   - UI: "🔄 Using Smart Simulator (Add API keys for full AI)"
+   - UI: "Using Smart Simulator (Add API keys for full AI)"
 
 4. **You'll still get helpful responses!**
 
@@ -101,11 +101,11 @@ The system will automatically detect and use them:
 1. **If you add OpenAI credits:**
    - Restart the app
    - It will automatically use OpenAI
-   - You'll see: "🤖 Powered by OpenAI GPT-4o-mini"
+   - You'll see: "Powered by OpenAI GPT-4o-mini"
 
 2. **When Gemini resets (24h):**
    - If OpenAI still has no credits, it will use Gemini
-   - You'll see: "🤖 Powered by Gemini AI (Fallback)"
+   - You'll see: "Powered by Gemini AI (Fallback)"
 
 ## Recommendation
 

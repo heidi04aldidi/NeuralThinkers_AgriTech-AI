@@ -22,8 +22,8 @@ You hit Gemini's free tier rate limit:
 - Better error messages showing which service failed
 
 **File: `farmer_dashboard.py`**
-- UI now shows "🤖 Powered by OpenAI GPT-4o-mini" when using OpenAI
-- Shows "🤖 Powered by Gemini AI (Fallback)" when using Gemini
+- UI now shows "Powered by OpenAI GPT-4o-mini" when using OpenAI
+- Shows "Powered by Gemini AI (Fallback)" when using Gemini
 - Clear indication of which service is active
 
 ### Rate Limit Comparison:
@@ -48,7 +48,7 @@ You should now see in terminal:
 
 And in the UI:
 ```
-🤖 Powered by OpenAI GPT-4o-mini
+Powered by OpenAI GPT-4o-mini
 ```
 
 ## If OpenAI Also Runs Out
